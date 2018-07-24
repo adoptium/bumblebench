@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry excluding="net/adoptopenjdk/bumblebench/nick/|net/adoptopenjdk/bumblebench/indy/net.adoptopenjdk.bumblebench.indy.ComplexIndyTests/" kind="src" path=""/>
+	<classpathentry kind="src" path="net/adoptopenjdk/bumblebench/indy/net.adoptopenjdk.bumblebench.indy.ComplexIndyTests"/>
+	<classpathentry kind="src" path="net/adoptopenjdk/bumblebench/nick"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

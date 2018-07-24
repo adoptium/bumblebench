@@ -1,0 +1,186 @@
+<?xml version="1.0"?>
+
+<!--
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+	    http://www.apache.org/licenses/LICENSE-2.0
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+This is a build.xml which executes the main openjdk.build build.xml 
+to allow tools which invoke a root level build.xml file to 
+execute a build.
+-->
+
+<project name="net.adoptopenjdk.bumblebench" default="dist" basedir=".">
+	<!--taskdef resource='net/sf/antcontrib/antlib.xml'/-->
+	<description>
+       Compile net.adoptopenjdk.bumblebench
+    </description>
+
+	<property name="dist" value="${basedir}"/>
+	<property name="src-core" value="${basedir}/net/adoptopenjdk/bumblebench/core"/>
+	<property name="src-collections" value="${basedir}/net/adoptopenjdk/bumblebench/collections"/>
+	<property name="src-crypto" value="${basedir}/net/adoptopenjdk/bumblebench/crypto"/>
+	<property name="src-examples" value="${basedir}/net/adoptopenjdk/bumblebench/examples"/>
+	<property name="src-gpu" value="${basedir}/net/adoptopenjdk/bumblebench/gpu"/>
+	<property name="src-humble" value="${basedir}/net/adoptopenjdk/bumblebench/humble"/>
+	<property name="src-json" value="${basedir}/net/adoptopenjdk/bumblebench/json"/>
+	<property name="src-indy" value="${basedir}/net/adoptopenjdk/bumblebench/indy"/>
+	<property name="src-lambda" value="${basedir}/net/adoptopenjdk/bumblebench/lambda"/>
+	<property name="src-math" value="${basedir}/net/adoptopenjdk/bumblebench/math"/>
+    <property name="src-string" value="${basedir}/net/adoptopenjdk/bumblebench/string"/>
+
+	<target name="compile-all" description="compile" >
+
+		<!-- core -->
+		<javac srcdir="${src-core}" 
+             destdir=""
+             debug="on"
+             source="1.6"
+             target="1.6" 
+             excludes="">
+		</javac>
+		<javac srcdir="${src-core}" 
+             destdir=""
+             debug="on"
+             source="1.7"
+             target="1.7" 
+             includes="**/ParallelBench.java">
+		</javac>
+
+		<!-- collections -->
+		<javac srcdir="${src-collections}" 
+            debug="on" 
+            destdir=""
+            source="1.6"
+            target="1.6" 
+            classpath="${src-core}"
+        	excludes="**/*ambda*.java">
+		</javac>
+
+		<javac srcdir="${src-collections}" 
+            debug="on" 
+            destdir=""
+            source="1.8"
+            target="1.8" 
+            classpath="${src-core}"
+            includes="**/*ambda*.java">
+		</javac>
+
+		<!-- crypto -->
+		<javac srcdir="${src-crypto}" 
+            debug="on" 
+            destdir=""
+            source="1.6"
+            target="1.6" 
+            classpath="${src-core}">
+		</javac>
+
+		<!-- examples -->
+		<javac srcdir="${src-examples}" 
+            debug="on" 
+            destdir=""
+            source="1.7"
+            target="1.7" 
+            classpath="${src-examples}"
+            includes="**/SocketEchoBench.java">
+		</javac>
+		<javac srcdir="${src-examples}" 
+             debug="on" 
+             destdir=""
+             source="1.8"
+             target="1.8" 
+             classpath="${src-examples}"
+             includes="**/*ambda*.java">
+		</javac>
+		<javac srcdir="${src-examples}" 
+            debug="on" 
+            destdir=""
+            source="1.6"
+            target="1.6" 
+            classpath="${src-examples}"
+        	excludes="**/*ambda*.java, **/SocketEchoBench.java">
+		</javac>
+
+		<!-- string -->
+        <javac srcdir="${src-string}" 
+            debug="on" 
+            destdir=""
+            source="1.7"
+            target="1.7" 
+            classpath="${src-string}">
+        </javac>
+		
+		<!-- gpu -->
+		<javac srcdir="${src-gpu}" 
+            debug="on" 
+            destdir=""
+            source="1.8"
+            target="1.8" 
+            classpath="${src-gpu}">
+		</javac>
+
+		<!-- indy -->
+		<!--
+        <javac srcdir="${src-indy}" 
+             debug="on" 
+             destdir=""
+             source="1.8"
+             target="1.8" 
+             classpath="${src-indy},${basedir}/asm-all-4.0.jar">
+         </javac>
+    	-->
+
+		<!-- lambda -->
+		<javac srcdir="${src-lambda}" 
+             debug="on" 
+             destdir=""
+             source="1.8"
+             target="1.8">
+		</javac>
+
+
+		<!-- math -->
+		<javac srcdir="${src-math}" 
+             debug="on" 
+             destdir=""
+             source="1.6"
+             target="1.6" 
+             classpath="${src-math}">
+		</javac>
+
+		<!-- humble -->
+		<javac srcdir="${src-humble}" 
+        debug="on"
+        destdir=""
+        source="1.8"
+        target="1.8" >
+		</javac>
+	</target>
+
+
+	<!-- Create BumbleBench.jar and clean up -->
+	<target name="dist" depends="compile-all" description="generate the distribution" >
+		<exec executable="bash">
+			<arg value="-c" />
+			<arg value="rm -f BumbleBench.jar" />
+		</exec>
+		
+		<jar jarfile="${dist}/BumbleBench.jar" filesonly="true">
+			<fileset dir="${basedir}"
+             	excludes="**/asm-all-4.0.jar,**/Makefile,**/*.mk, **/build.xml">
+			</fileset>
+			<manifest>
+				<attribute name="Main-Class" value="net.adoptopenjdk.bumblebench.core.Launcher"/>
+			</manifest>
+		</jar>
+
+		<delete>
+			<fileset dir="." includes="**/*.class"/>
+		</delete>
+	</target>
+</project>

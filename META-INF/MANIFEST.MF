@@ -1,0 +1,5 @@
+Manifest-Version: 1.0
+Class-Path: asm-all-4.0.jar
+Created-By: 1.8.0 
+Main-Class: net.adoptopenjdk.bumblebench.core.Launcher
+
