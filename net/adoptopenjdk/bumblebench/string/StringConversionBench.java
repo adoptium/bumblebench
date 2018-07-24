@@ -24,6 +24,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.util.Arrays;
+import java.lang.StringBuilder;
 
 /**
  * 
@@ -43,4 +44,81 @@ import java.util.Arrays;
  * */
 
 public final class StringConversionBench extends MiniBench {
+
+	private static final int MAX_NUM_STRINGS = option("maxNumStrings", 1000);
+
+	private static final int STRING_LENGTH = option("stringLength", 0);
+	private static final boolean IS_TESTING_TO_UPPER = option("testUpper",false);
+	private static final boolean IS_PSUEDO_RANDOM = option("random",false);
+
+	private static Random rand;
+
+	private static String[] strings;
+	private static char[] possibleChars = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l',
+		'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'A', 'B', 'C', 'D', 'E',
+		'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X',
+		'Y', 'Z', ' ', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
+
+	static {
+		strings = new String[MAX_NUM_STRINGS];
+		rand = new Random();
+		int length;
+		StringBuilder sb = new StringBuilder(1000);
+
+		if (!IS_PSUEDO_RANDOM) {
+			rand.setSeed(12345L);
+		}
+
+		if (STRING_LENGTH <= 0  || STRING_LENGTH > 1000) {
+			for (int i = 0; i < MAX_NUM_STRINGS; i++) {
+				length = rand.nextInt(1000);
+				sb.setLength(0);
+				for (int j = 0; j < length; ++j){
+					sb.append(possibleChars[rand.nextInt(possibleChars.length)]);
+				}
+				strings[i] = sb.toString();
+			}
+		} else {
+			length = STRING_LENGTH;
+			for (int i = 0; i < MAX_NUM_STRINGS; ++i) {
+				sb.setLength(0);
+				for (int j = 0; j < length; ++j){
+					sb.append(possibleChars[rand.nextInt(possibleChars.length)]);
+				}
+				strings[i] = sb.toString();
+			}
+		}
+	}
+
+	private String[] stringsToConvert;
+
+	protected int maxIterationsPerLoop() {
+		return MAX_NUM_STRINGS;
+	}
+
+	private void doConversion() {
+		for (int i = 0; i < stringsToConvert.length; i++) {
+			if (IS_TESTING_TO_UPPER) {
+				stringsToConvert[i] = stringsToConvert[i].toUpperCase();
+			} else {
+				stringsToConvert[i] = stringsToConvert[i].toLowerCase();
+			}
+		}
+	}
+
+	protected long doBatch(long numLoops, int numIterationsPerLoop) throws InterruptedException {
+		stringsToConvert = new String[numIterationsPerLoop];
+
+		for (long loop = 0; loop < numLoops; loop++) {
+			for (int i = 0; i < numIterationsPerLoop; i++){
+				stringsToConvert[i] = strings[rand.nextInt(MAX_NUM_STRINGS)];
+			}
+
+			startTimer();
+			doConversion();
+			pauseTimer();
+		}
+
+		return numLoops * numIterationsPerLoop;
+	}
 }
