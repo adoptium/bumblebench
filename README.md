@@ -1,2 +1,6 @@
 # bumblebench
-A microbenchmarking test framework for Adopt OpenJDK
+This microbenchmarking test framework for AdoptOpenJDK, along with [jmh](http://openjdk.java.net/projects/code-tools/jmh/) will be used to create and run different types of benchmarks on binaries produced at AdoptOpenJDK (to verify that large perf regressions are caught).  While we may have limited access to isolated performance machines, many microbenchmarks can still be useful to catch regressions early.
+
+BumbleBench is a microbenchmark tool intended to make it as easy as possible to avoid common pitfalls when microbenchmarking Java. It is intended to make sure that test runs spend most of their time running the desired piece of code compiled at the highest possible level of quality. This is surprisingly tricky in an environment with dynamic compilation employing aggressive speculative optimizations.
+
+The name "BumbleBench" derives from the manner in which the tool varies the iteration count of the benchmark's main loop in order to determine the highest iteration count that can be completed within a given target duration. The target score vacillates around the estimated maximum achievable score, alternating between low and high target scores in an attempt to converge on the actual achievable score, while remaining sensitive to variations in performance that can occur due to effects like jit compilation occurring during the run.
