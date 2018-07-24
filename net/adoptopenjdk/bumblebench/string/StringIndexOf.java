@@ -7,8 +7,7 @@ import java.lang.StringBuilder;
 
 /**
  * 
- * on z13 and newer z/Architectures with vector facilities enabled, string
- * indexOf can be accelerated by vector instructions.
+ * String.indexOf can be accelerated by vector instructions.
  * 
  * This benchmark can generate strings of fixed/variable lengths and invokes
  * indexOf to measure performance.
