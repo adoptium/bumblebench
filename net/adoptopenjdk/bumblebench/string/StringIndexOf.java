@@ -35,6 +35,7 @@ public final class StringIndexOf extends MicroBench {
 	private static final int MAX_ITERATIONS_PER_LOOP = option("maxIterations", 10000000);
 	private static final int INDEX_OF_VALUE = option("indexOfValue", 10);
 	private static int STRING_LENGTH = option("stringLength", 0);
+	private static final boolean IS_PSUEDO_RANDOM = option("random",false);
 
 	private static String string;
 	private static char[] possibleChars = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l',
@@ -51,7 +52,9 @@ public final class StringIndexOf extends MicroBench {
 		int length;
 		StringBuilder sb = new StringBuilder(1000);
 
-		rand.setSeed(12345L);
+		if (!IS_PSUEDO_RANDOM) {
+			rand.setSeed(12345L);
+		}
 
 		for (int j = 0; j < STRING_LENGTH; ++j){
 			sb.append(possibleChars[rand.nextInt(possibleChars.length)]);
