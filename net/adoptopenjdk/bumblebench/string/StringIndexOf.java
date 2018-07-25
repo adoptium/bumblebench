@@ -60,7 +60,11 @@ public final class StringIndexOf extends MicroBench {
 			sb.append(possibleChars[rand.nextInt(possibleChars.length)]);
 		}
 
-		sb.setCharAt(INDEX_OF_VALUE, '.');
+		// If the options options specify a length smaller than the index,
+		// the search character shouldn't be found and indexOf() will return 0
+		if (INDEX_OF_VALUE < STRING_LENGTH) {
+			sb.setCharAt(INDEX_OF_VALUE, '.');
+		}
 
 		string = sb.toString();
 	}
