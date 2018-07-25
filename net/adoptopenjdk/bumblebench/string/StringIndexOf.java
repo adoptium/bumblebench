@@ -1,6 +1,20 @@
-package com.ibm.bumblebench.string;
+/*******************************************************************************
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*      http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*******************************************************************************/
 
-import com.ibm.bumblebench.core.MicroBench;
+package net.adoptopenjdk.bumblebench.string;
+
+import net.adoptopenjdk.bumblebench.core.MicroBench;
 
 import java.util.Random;
 import java.lang.StringBuilder;
@@ -39,13 +53,13 @@ public final class StringIndexOf extends MicroBench {
 
 		rand.setSeed(12345L);
 
-        for (int j = 0; j < STRING_LENGTH; ++j){
-            sb.append(possibleChars[rand.nextInt(possibleChars.length)]);
+		for (int j = 0; j < STRING_LENGTH; ++j){
+			sb.append(possibleChars[rand.nextInt(possibleChars.length)]);
 		}
-		
+
 		sb.setCharAt(INDEX_OF_VALUE, '.');
 
-        string = sb.toString();
+		string = sb.toString();
 	}
 
 	protected int maxIterationsPerLoop() {
