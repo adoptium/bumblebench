@@ -54,10 +54,6 @@ public final class StringConversionBench extends MiniBench {
 	private static Random rand;
 
 	private static String[] strings;
-	private static char[] possibleChars = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l',
-		'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'A', 'B', 'C', 'D', 'E',
-		'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X',
-		'Y', 'Z', ' ', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
 
 	static {
 		strings = new String[MAX_NUM_STRINGS];
@@ -74,7 +70,7 @@ public final class StringConversionBench extends MiniBench {
 				length = rand.nextInt(1000);
 				sb.setLength(0);
 				for (int j = 0; j < length; ++j){
-					sb.append(possibleChars[rand.nextInt(possibleChars.length)]);
+					sb.append(StringTestData.POSSIBLE_CHARS[rand.nextInt(StringTestData.POSSIBLE_CHARS.length)]);
 				}
 				strings[i] = sb.toString();
 			}
@@ -83,7 +79,7 @@ public final class StringConversionBench extends MiniBench {
 			for (int i = 0; i < MAX_NUM_STRINGS; ++i) {
 				sb.setLength(0);
 				for (int j = 0; j < length; ++j){
-					sb.append(possibleChars[rand.nextInt(possibleChars.length)]);
+					sb.append(StringTestData.POSSIBLE_CHARS[rand.nextInt(StringTestData.POSSIBLE_CHARS.length)]);
 				}
 				strings[i] = sb.toString();
 			}
