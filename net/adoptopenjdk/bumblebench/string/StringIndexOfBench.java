@@ -20,17 +20,17 @@ import java.util.Random;
 import java.lang.StringBuilder;
 
 /**
- * 
+ *
  * String.indexOf can be accelerated by vector instructions.
- * 
+ *
  * This benchmark can generate strings of fixed/variable lengths and invokes
  * indexOf to measure performance.
- * 
+ *
  * The reported score is in terms of number of string indexOfs per sec.
- * 
+ *
  * */
 
-public final class StringIndexOf extends MicroBench {
+public final class StringIndexOfBench extends MicroBench {
 
 	private static final int MAX_ITERATIONS_PER_LOOP = option("maxIterations", 10000000);
 	private static final int INDEX_OF_VALUE = option("indexOfValue", 10);
