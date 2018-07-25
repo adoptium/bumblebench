@@ -38,10 +38,6 @@ public final class StringIndexOfBench extends MicroBench {
 	private static final boolean IS_PSUEDO_RANDOM = option("random",false);
 
 	private static String string;
-	private static char[] possibleChars = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l',
-		'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'A', 'B', 'C', 'D', 'E',
-		'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X',
-		'Y', 'Z', ' ', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
 
 	private static int value = 0;
 
@@ -57,7 +53,7 @@ public final class StringIndexOfBench extends MicroBench {
 		}
 
 		for (int j = 0; j < STRING_LENGTH; ++j){
-			sb.append(possibleChars[rand.nextInt(possibleChars.length)]);
+			sb.append(StringTestData.POSSIBLE_CHARS[rand.nextInt(StringTestData.POSSIBLE_CHARS.length)]);
 		}
 
 		// If the options options specify a length smaller than the index,
