@@ -48,8 +48,8 @@ public final class StringConversionBench extends MiniBench {
 	private static final int MAX_NUM_STRINGS = option("maxNumStrings", 1000);
 
 	private static final int STRING_LENGTH = option("stringLength", 0);
-	private static final boolean IS_TESTING_TO_UPPER = option("testUpper",false);
-	private static final boolean IS_PSUEDO_RANDOM = option("random",false);
+	private static final boolean IS_TESTING_TO_UPPER = option("testUpper", false);
+	private static final boolean IS_PSUEDO_RANDOM = option("random", false);
 
 	private static Random rand;
 
