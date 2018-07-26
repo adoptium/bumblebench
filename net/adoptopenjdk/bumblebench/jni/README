@@ -1,0 +1,9 @@
+Special build instruction for this JNI benchmark.
+
+Taking z/OS as an example:
+
+1. Do an Ant build from Eclipse and get a Bumblebench.jar
+2. Copy the Bumblebench.jar to your target machine and unzip it. This is to extract the needed scripts to build JNI native libraries and run the tests.
+3. export SDK_DIR=/path/to/your/SDK
+4. Go to JNI-test-scripts/zos/ folder and run build-dll.sh. This script builds the DLL libraries.
+5. To run tests, execute JNI-test-scripts/zos/run-jni-test.sh. This also requires SDK_DIR.

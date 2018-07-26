@@ -32,7 +32,8 @@ execute a build.
 	<property name="src-indy" value="${basedir}/net/adoptopenjdk/bumblebench/indy"/>
 	<property name="src-lambda" value="${basedir}/net/adoptopenjdk/bumblebench/lambda"/>
 	<property name="src-math" value="${basedir}/net/adoptopenjdk/bumblebench/math"/>
-    <property name="src-string" value="${basedir}/net/adoptopenjdk/bumblebench/string"/>
+ 	<property name="src-string" value="${basedir}/net/adoptopenjdk/bumblebench/string"/>
+	<property name="src-jni" value="${basedir}/net/adoptopenjdk/bumblebench/jni"/>
 
 	<target name="compile-all" description="compile" >
 
@@ -41,14 +42,16 @@ execute a build.
              destdir=""
              debug="on"
              source="1.6"
-             target="1.6" 
+             target="1.6"
+             includeantruntime="false"
              excludes="">
 		</javac>
 		<javac srcdir="${src-core}" 
              destdir=""
              debug="on"
              source="1.7"
-             target="1.7" 
+             target="1.7"
+             includeantruntime="false"
              includes="**/ParallelBench.java">
 		</javac>
 
@@ -58,6 +61,7 @@ execute a build.
             destdir=""
             source="1.6"
             target="1.6" 
+            includeantruntime="false"
             classpath="${src-core}"
         	excludes="**/*ambda*.java">
 		</javac>
@@ -67,6 +71,7 @@ execute a build.
             destdir=""
             source="1.8"
             target="1.8" 
+            includeantruntime="false"
             classpath="${src-core}"
             includes="**/*ambda*.java">
 		</javac>
@@ -77,6 +82,7 @@ execute a build.
             destdir=""
             source="1.6"
             target="1.6" 
+            includeantruntime="false"
             classpath="${src-core}">
 		</javac>
 
@@ -86,6 +92,7 @@ execute a build.
             destdir=""
             source="1.7"
             target="1.7" 
+            includeantruntime="false"
             classpath="${src-examples}"
             includes="**/SocketEchoBench.java">
 		</javac>
@@ -94,6 +101,7 @@ execute a build.
              destdir=""
              source="1.8"
              target="1.8" 
+             includeantruntime="false"
              classpath="${src-examples}"
              includes="**/*ambda*.java">
 		</javac>
@@ -102,6 +110,7 @@ execute a build.
             destdir=""
             source="1.6"
             target="1.6" 
+            includeantruntime="false"
             classpath="${src-examples}"
         	excludes="**/*ambda*.java, **/SocketEchoBench.java">
 		</javac>
@@ -112,6 +121,7 @@ execute a build.
             destdir=""
             source="1.7"
             target="1.7" 
+            includeantruntime="false"
             classpath="${src-string}">
         </javac>
 		
@@ -121,6 +131,7 @@ execute a build.
             destdir=""
             source="1.8"
             target="1.8" 
+            includeantruntime="false"
             classpath="${src-gpu}">
 		</javac>
 
@@ -140,9 +151,18 @@ execute a build.
              debug="on" 
              destdir=""
              source="1.8"
-             target="1.8">
+             target="1.8"
+			 includeantruntime="false">
 		</javac>
 
+		<!-- JNI -->
+		<javac srcdir="${src-jni}" 
+             debug="on" 
+             destdir=""
+             source="1.8"
+             target="1.8"
+			 includeantruntime="false">
+		</javac>
 
 		<!-- math -->
 		<javac srcdir="${src-math}" 
@@ -150,6 +170,7 @@ execute a build.
              destdir=""
              source="1.6"
              target="1.6" 
+			 includeantruntime="false"
              classpath="${src-math}">
 		</javac>
 
@@ -158,13 +179,13 @@ execute a build.
         debug="on"
         destdir=""
         source="1.8"
-        target="1.8" >
+        target="1.8" 
+        includeantruntime="false">
 		</javac>
 	</target>
 
-
 	<!-- Create BumbleBench.jar and clean up -->
-	<target name="dist" depends="compile-all" description="generate the distribution" >
+	<target name="dist" depends="compile-all" description="Generate the jar file" >
 		<exec executable="bash">
 			<arg value="-c" />
 			<arg value="rm -f BumbleBench.jar" />
@@ -172,7 +193,7 @@ execute a build.
 		
 		<jar jarfile="${dist}/BumbleBench.jar" filesonly="true">
 			<fileset dir="${basedir}"
-             	excludes="**/asm-all-4.0.jar,**/Makefile,**/*.mk, **/build.xml">
+             	excludes="**/asm-all-4.0.jar,**/Makefile,**/*.mk, **/build.xml. **/.project">
 			</fileset>
 			<manifest>
 				<attribute name="Main-Class" value="net.adoptopenjdk.bumblebench.core.Launcher"/>
