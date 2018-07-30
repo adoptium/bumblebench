@@ -50,7 +50,7 @@ public final class EllipticCurveBench extends MicroBench {
 
     protected long doBatch(long numIterations) throws InterruptedException {
         try {
-            for (int i = 0; i < numIterations; i++) {
+            for (long i = 0; i < numIterations; i++) {
                 keyPairGeneratora.initialize(new ECGenParameterSpec(curve), null);
                 keyPairGeneratorb.initialize(new ECGenParameterSpec(curve), null);
 
