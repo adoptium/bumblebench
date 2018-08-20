@@ -74,7 +74,7 @@ public final class RSABench extends MicroBench {
 
     protected long doBatch(long numIterations) throws InterruptedException {
         try {
-            for (int i = 0; i < numIterations; i++) {
+            for (long i = 0; i < numIterations; i++) {
                 PrivateKey alice_privateKey = (PrivateKey) alice_key_pair.getPrivate();
                 // System.out.println("Alice DH Private Key:" +
                 // alice_privateKey.toString());

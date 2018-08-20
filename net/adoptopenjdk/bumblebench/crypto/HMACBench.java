@@ -19,55 +19,69 @@ import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.util.Arrays;
 import java.util.Random;
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
+import java.security.InvalidKeyException;
 
 import javax.xml.bind.DatatypeConverter;
 
 import net.adoptopenjdk.bumblebench.core.MicroBench;
 
-public final class DigestBench extends MicroBench {
+public final class HMACBench extends MicroBench {
 
     static final int     len = option("payload", 4096);
-    static final String  alg = option("algorithm", "SHA-256");
+    static final String  alg = option("algorithm", "HmacSHA256");
 
     static final byte[]  data;
-    static MessageDigest md;
-
+    static Mac mac;
+    static SecretKeySpec key;
     static {
         data = new byte[len];
         Random r = new Random(10);
         r.nextBytes(data);
 
+        key = new SecretKeySpec(data, alg);
+
         String provider = option("provider_name", "");
         try {
             if (provider.equals("")) {
-                md = MessageDigest.getInstance(alg);
-            } else {
-                if (provider.equals("IBMJCEPlus")) {
-                    java.security.Provider java_provider = java.security.Security.getProvider("IBMJCEPlus");
-                    if( java_provider == null ) { 
-                        java_provider = (java.security.Provider)Class.forName("com.ibm.crypto.plus.provider.IBMJCEPlus").newInstance();
-                        java.security.Security.insertProviderAt( java_provider, 1 );
-                    }
-                    md = MessageDigest.getInstance(alg, java_provider);
-                } else {
-                    md = MessageDigest.getInstance(alg, provider);
+                mac = Mac.getInstance(alg);
+            } else if (provider.equals("IBMJCEPlus")) {
+                java.security.Provider java_provider = java.security.Security.getProvider("IBMJCEPlus");
+                if( java_provider == null ) {
+                    java_provider = (java.security.Provider)Class.forName("com.ibm.crypto.plus.provider.IBMJCEPlus").newInstance();
+                    java.security.Security.insertProviderAt(java_provider, 1);
                 }
+                mac = Mac.getInstance(alg, java_provider);
+            } else {
+                mac = Mac.getInstance(alg, provider);
             }
-            System.out.println("Using Provider " + md.getProvider().getName());
+            System.out.println("Using Provider " + mac.getProvider().getName());
             System.out.println("Payload size: "+ data.length + " bytes");
-        } catch (Exception e) {
+        } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        } catch (NoSuchProviderException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+
         }
     }
 
     protected long doBatch(long numBytes) throws InterruptedException {
-
         long numIterations = java.lang.Math.round((double)numBytes/data.length);
-        for (long i = 0; i < numIterations; i++) {
-            md.reset();
-            byte[] result = md.digest(data);
+        try{
+            for (long i = 0; i < numIterations; i++) {
+                mac.init(key);
+                byte[] result = mac.doFinal(data);
+            }
+        } catch (InvalidKeyException e){
+            e.printStackTrace();
         }
         return numIterations*data.length;
     }
-
 }

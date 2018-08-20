@@ -17,12 +17,14 @@ package net.adoptopenjdk.bumblebench.crypto;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.security.spec.AlgorithmParameterSpec;
 import java.util.Random;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
+import javax.crypto.spec.GCMParameterSpec;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
@@ -30,81 +32,102 @@ import net.adoptopenjdk.bumblebench.core.MicroBench;
 
 public final class CipherBench extends MicroBench {
 
-    static final SecretKeySpec skey       = new SecretKeySpec(new byte[] { -80, -103, -1, 68, -29, -94, 61, -52, 93, -59, -128, 105, 110, 88, 44, 105 }, "AES");
-    static final SecretKeySpec skeydesede = new SecretKeySpec(new byte[] { -80, -103, -1, 68, -29, -94, 61, -52, 93, -59, -128, 105, 110, 88, 44, 105, 29, -94, 61, -52, 93, -59,
-            -128, 105                    }, "DESede");
-    static final SecretKeySpec skeydes    = new SecretKeySpec(new byte[] { 29, -94, 61, -52, 93, -59, -128, 105 }, "DES");
+    // 128 bits
+    static final SecretKeySpec skey_128 = new SecretKeySpec(new byte[] { -80, -103, -1, 68, -29, -94, 61, -52, 93, -59, -128, 105, 110, 88, 44, 105 }, "AES");
+    // 256 bits
+    static final SecretKeySpec skey_256 = new SecretKeySpec(new byte[] { -80, -103, -1, 68, -29, -94, 61, -52, 93, -59, -128, 105, 110, 88, 44, 105, -80, -103, -1, 68, -29, -94, 61, -52, 93, -59, -128, 105, 110, 88, 44, 105 }, "AES");
+    static final SecretKeySpec skey;
 
-    static final SecretKeySpec keyArr[]   = { skeydes, skeydesede, skey };
-
-    static final byte[]        iv         = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
-    static final byte[]        ivdes      = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
-    static final byte[][]      ivArr      = { ivdes, ivdes, iv };
-
+    // 128 bits
+    static final byte[]        iv;
     static final int           len;
-    static final String        alg;
-    static final String        mode;
-    static final int           algIndex;
     static final byte[]        data;
-
-    static Cipher              ciphera;
-    static Cipher              cipherb;
+    static final byte[]        out;
+    static final int           modeInt;
+    // 128 bit
+    static Cipher              cipher;
     static {
+
+        // 
         len = option("payload", 4096);
-        alg = option("algorithm", "AES");
-        mode = option("mode", "CBC");
-        if (alg.equals("DES")) {
-            algIndex = 0;
-        } else if (alg.equals("DESede")) {
-            algIndex = 1;
-        } else if (alg.equals("AES")) {
-            algIndex = 2;
-        } else {
-            algIndex = -1;
-        }
+        String algorithm = option("algorithm", "AES-128-CBC");
 
         data = new byte[len];
+	    out  = new byte[len];
+        iv   = new byte[16];
         Random r = new Random(10);
         r.nextBytes(data);
+        r.nextBytes(iv);
 
-        try {
-            ciphera = Cipher.getInstance(alg + '/' + mode + "/PKCS5Padding");
-            cipherb = Cipher.getInstance(alg + '/' + mode + "/PKCS5Padding");
-        } catch (NoSuchAlgorithmException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (NoSuchPaddingException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+        String mode = option("mode", "encrypt");
+        if (mode.equals("encrypt")) {
+            modeInt = 1;
+        } else if (mode.equals("decrypt")) {
+            modeInt = 0;
+        } else {
+            throw new RuntimeException("Unsupported mode");
         }
 
-    }
+        if (algorithm.contains("128")) {
+            skey = skey_128;
+        } else if (algorithm.contains("256")) {
+            skey = skey_256;
+        } else {
+            skey = null;
+            throw new RuntimeException("Unsupported key size");
+        }
 
-    protected long doBatch(long numIterations) throws InterruptedException {
-        IvParameterSpec iviv = new IvParameterSpec(ivArr[algIndex]);
+        String cipherMode;
+        if (algorithm.contains("CBC")) {
+            cipherMode = "AES/CBC/NoPadding";
+        } else if (algorithm.contains("CTR")) {
+            cipherMode = "AES/CTR/NoPadding";
+        } else {
+            throw new RuntimeException("Only CBC and CTR cipher modes available");
+        }
 
+        String provider = option("provider_name", "");
         try {
-            ciphera.init(Cipher.ENCRYPT_MODE, keyArr[algIndex], iviv);
-            cipherb.init(Cipher.DECRYPT_MODE, keyArr[algIndex], iviv);
+            if (provider.equals("")) {
+                cipher = Cipher.getInstance(cipherMode);
+	    } else { if (provider.equals("IBMJCEPlus")) {
+                   java.security.Provider java_provider = java.security.Security.getProvider("IBMJCEPlus");
+                   if( java_provider == null ) { 
+                        java_provider = (java.security.Provider)Class.forName("com.ibm.crypto.plus.provider.IBMJCEPlus").newInstance();
+                        java.security.Security.insertProviderAt( java_provider, 1 );
+                   }
+                   cipher = Cipher.getInstance(cipherMode, java_provider);
 
-            for (int i = 0; i < numIterations; i++) {
-                byte[] out11 = ciphera.doFinal(data);
-                byte[] out2 = cipherb.doFinal(out11);
+            } else {
+                cipher = Cipher.getInstance(cipherMode, provider);
             }
-        } catch (InvalidKeyException e) {
-            // TODO Auto-generated catch block
+	    }
+
+            System.out.println("Using Provider " + cipher.getProvider().getName());
+            System.out.println("Payload size: "+ data.length + " bytes");
+            AlgorithmParameterSpec iviv = new IvParameterSpec(iv);
+            if (modeInt == 0) {
+                cipher.init(Cipher.DECRYPT_MODE, skey, iviv);
+            } else {
+                cipher.init(Cipher.ENCRYPT_MODE, skey, iviv);
+            }
+            
+        } catch (Exception e) {
             e.printStackTrace();
-        } catch (InvalidAlgorithmParameterException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (IllegalBlockSizeException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (BadPaddingException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            System.exit(1);
         }
-        return numIterations;
     }
 
+    protected long doBatch(long numBytes) throws InterruptedException {
+        long numIterations = java.lang.Math.round((double)numBytes/data.length)+1;
+        
+        for (long i = 0; i < numIterations; i++) {
+            try {
+                cipher.update(data, 0, data.length, out);
+            } catch(Exception e) {
+                System.exit(1);
+            }
+        }
+        return numIterations*data.length;
+    }
 }
