@@ -20,8 +20,6 @@ import java.security.NoSuchProviderException;
 import java.util.Arrays;
 import java.util.Random;
 
-import javax.xml.bind.DatatypeConverter;
-
 import net.adoptopenjdk.bumblebench.core.MicroBench;
 
 public final class DigestBench extends MicroBench {
