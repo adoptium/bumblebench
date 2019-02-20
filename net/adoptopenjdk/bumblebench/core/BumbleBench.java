@@ -450,7 +450,7 @@ public abstract class BumbleBench extends Util implements Runnable {
 			if (exponential.endsWith("E-9"))
 				sb.replace(eIndex, sb.length(), "n");
 			else if (exponential.endsWith("E-6"))
-				sb.replace(eIndex, sb.length(), "μ");
+				sb.replace(eIndex, sb.length(), "u");
 			else if (exponential.endsWith("E-3"))
 				sb.replace(eIndex, sb.length(), "m");
 			else if (exponential.endsWith("E+3"))
