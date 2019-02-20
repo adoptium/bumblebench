@@ -23,8 +23,6 @@ import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import java.security.InvalidKeyException;
 
-import javax.xml.bind.DatatypeConverter;
-
 import net.adoptopenjdk.bumblebench.core.MicroBench;
 
 public final class HMACBench extends MicroBench {
