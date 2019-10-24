@@ -139,7 +139,7 @@ public abstract class KmeansBench extends GPUBase {
     	}
 	}
 
-	public final class GPULambda extends KmeansBench {
+	public static final class GPULambda extends KmeansBench {
     	protected long doBatch(long numIterations) throws InterruptedException {
         	for (long countNI = 0; countNI < numIterations; countNI+=1) {
 					pauseTimer();
