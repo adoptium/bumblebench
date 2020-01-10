@@ -41,16 +41,16 @@ execute a build.
 		<javac srcdir="${src-core}" 
              destdir=""
              debug="on"
-             source="1.6"
-             target="1.6"
+             source="1.8"
+             target="1.8"
              includeantruntime="false"
              excludes="">
 		</javac>
 		<javac srcdir="${src-core}" 
              destdir=""
              debug="on"
-             source="1.7"
-             target="1.7"
+             source="1.8"
+             target="1.8"
              includeantruntime="false"
              includes="**/ParallelBench.java">
 		</javac>
@@ -59,8 +59,8 @@ execute a build.
 		<javac srcdir="${src-collections}" 
             debug="on" 
             destdir=""
-            source="1.6"
-            target="1.6" 
+            source="1.8"
+            target="1.8" 
             includeantruntime="false"
             classpath="${src-core}"
         	excludes="**/*ambda*.java">
@@ -80,8 +80,8 @@ execute a build.
 		<javac srcdir="${src-crypto}" 
             debug="on" 
             destdir=""
-            source="1.6"
-            target="1.6" 
+            source="1.8"
+            target="1.8" 
             includeantruntime="false"
             classpath="${src-core}">
 		</javac>
@@ -90,8 +90,8 @@ execute a build.
 		<javac srcdir="${src-examples}" 
             debug="on" 
             destdir=""
-            source="1.7"
-            target="1.7" 
+            source="1.8"
+            target="1.8" 
             includeantruntime="false"
             classpath="${src-examples}"
             includes="**/SocketEchoBench.java">
@@ -108,8 +108,8 @@ execute a build.
 		<javac srcdir="${src-examples}" 
             debug="on" 
             destdir=""
-            source="1.6"
-            target="1.6" 
+            source="1.8"
+            target="1.8" 
             includeantruntime="false"
             classpath="${src-examples}"
         	excludes="**/*ambda*.java, **/SocketEchoBench.java">
@@ -119,8 +119,8 @@ execute a build.
         <javac srcdir="${src-string}" 
             debug="on" 
             destdir=""
-            source="1.7"
-            target="1.7" 
+            source="1.8"
+            target="1.8" 
             includeantruntime="false"
             classpath="${src-string}">
         </javac>
@@ -168,8 +168,8 @@ execute a build.
 		<javac srcdir="${src-math}" 
              debug="on" 
              destdir=""
-             source="1.6"
-             target="1.6" 
+             source="1.8"
+             target="1.8" 
 			 includeantruntime="false"
              classpath="${src-math}">
 		</javac>
