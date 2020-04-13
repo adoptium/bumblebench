@@ -24,20 +24,18 @@ import java.io.InputStreamReader;
 
 public class Util {
 
-	private static final Method IO_UTILS_READ_FULLY;
+	private static final Method IO_UTILS_READ_ALL_BYTES;
 	private static final Method INPUT_STREAM_READ_ALL_BYTES;
 
 	static {
-		Method ioUtilsReadFully = null;
+		Method ioUtilsReadAllBytes = null;
 		Method inputStreamReadAllBytes = null;
 		try {
 			try {
 				Class<?> ioUtils = Class.forName("sun.misc.IOUtils");
-				ioUtilsReadFully = ioUtils.getDeclaredMethod(
-					"readFully",
-					InputStream.class,
-					int.class,
-					boolean.class);
+				ioUtilsReadAllBytes = ioUtils.getDeclaredMethod(
+					"readAllBytes",
+					InputStream.class);
 			} catch (ClassNotFoundException notFound) {
 				inputStreamReadAllBytes =
 					InputStream.class.getDeclaredMethod("readAllBytes");
@@ -46,7 +44,7 @@ public class Util {
 			throw new RuntimeException(exc);
 		}
 
-		IO_UTILS_READ_FULLY = ioUtilsReadFully;
+		IO_UTILS_READ_ALL_BYTES = ioUtilsReadAllBytes;
 		INPUT_STREAM_READ_ALL_BYTES = inputStreamReadAllBytes;
 	}
 
@@ -190,8 +188,8 @@ public class Util {
 
 	private static byte[] readFully(InputStream stream) {
 		try {
-			if (IO_UTILS_READ_FULLY != null) {
-				return (byte[])IO_UTILS_READ_FULLY.invoke(null, stream, -1, true);
+			if (IO_UTILS_READ_ALL_BYTES != null) {
+				return (byte[])IO_UTILS_READ_ALL_BYTES.invoke(null, stream);
 			} else {
 				return (byte[])INPUT_STREAM_READ_ALL_BYTES.invoke(stream);
 			}
