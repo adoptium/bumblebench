@@ -34,6 +34,7 @@ execute a build.
 	<property name="src-math" value="${basedir}/net/adoptopenjdk/bumblebench/math"/>
  	<property name="src-string" value="${basedir}/net/adoptopenjdk/bumblebench/string"/>
 	<property name="src-jni" value="${basedir}/net/adoptopenjdk/bumblebench/jni"/>
+	<property name="src-arraycopy" value="${basedir}/net/adoptopenjdk/bumblebench/arraycopy"/>
 
 	<target name="compile-all" description="compile" >
 
@@ -177,6 +178,15 @@ execute a build.
 
 		<!-- humble -->
 		<javac srcdir="${src-humble}" 
+        debug="on"
+        destdir=""
+        source="1.8"
+        target="1.8" 
+        includeantruntime="false">
+		</javac>
+
+		<!-- arraycopy -->
+		<javac srcdir="${src-arraycopy}" 
         debug="on"
         destdir=""
         source="1.8"
