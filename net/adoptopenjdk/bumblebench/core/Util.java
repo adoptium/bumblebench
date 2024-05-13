@@ -21,6 +21,7 @@ import java.io.PrintStream;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.HashMap;
 
 public class Util {
 
@@ -122,6 +123,13 @@ public class Util {
 			return defaultValue.intern();
 		else
 			return value.intern();
+	}
+
+	public static HashMap<Class<? extends MicroBench>, Integer> option(String name, HashMap<Class<? extends MicroBench>, Integer> defaultValue){
+		if (LIST_OPTIONS)
+			out().println("- Option " + name + " default " + defaultValue);
+
+		return new HashMap<>();
 	}
 
 	public static int option(String name, int defaultValue) {
