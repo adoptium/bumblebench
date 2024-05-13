@@ -1,26 +1,28 @@
 /*******************************************************************************
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-*
-*      http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
-*******************************************************************************/
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *******************************************************************************/
 
 package net.adoptopenjdk.bumblebench.core;
 
-import java.io.InputStream;
-import java.io.IOException;
+import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.net.URL;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
+
+
 
 public class Launcher extends Util {
 
@@ -44,6 +46,9 @@ public class Launcher extends Util {
 		}
 
 		String testName = args[0].replace('.', '$');
+		if (testName.toLowerCase().contains("jitserver")){
+			parseJitServerOptions(packages, args);
+		}
 
 		Class testClass = loadTestClass(packages, testName);
 		int numParallelInstances = option("parallelInstances", 0);
@@ -54,6 +59,41 @@ public class Launcher extends Util {
 		else
 			runBumbleMainOn((BumbleBench)testClass.newInstance());
 	}
+	public static void parseJitServerOptions(String[] packageNames, String[] args) throws IOException, ClassNotFoundException {
+
+		File file = loadFile(packageNames,"jitserver");
+		PrintWriter writer = new PrintWriter(file);
+
+		if (args.length % 2 == 0){
+			err().println("Incorrect number of arguments");
+			System.exit(1);
+		}
+		for (int i = 1; i<args.length; i+=2){
+			writer.write(args[i] + "," + args[i+1] + "\n");
+		}
+		writer.close();
+	}
+	public static File loadFile(String[] packageNames, String name) throws ClassNotFoundException, IOException {
+		ClassNotFoundException typicalException = null;
+		for (String packageName: packageNames) {
+			File testFile = loadFile(packageName, name);
+			if (testFile != null)
+				return testFile;
+		}
+		throw new ClassNotFoundException(name);
+	}
+	public static File loadFile(String packageName, String name){
+		String filePath = packageName.replace('.', '/');
+		String fileName = '/' + qualifiedFileName(filePath, name) + ".properties";
+		URL temp = Launcher.class.getResource(fileName);
+		if (temp != null) {
+			return new File(temp.getPath());
+		}
+		else {
+			return null;
+		}
+	}
+
 
 	static void runBumbleMainOn(BumbleBench instance) throws NoSuchMethodException, IllegalAccessException {
 		Method mainMethod = instance.getClass().getMethod(option("bumbleMain", "bumbleMain"));
@@ -66,19 +106,20 @@ public class Launcher extends Util {
 	}
 
 	static final String defaultPackagePath = ":"
-		+ ":net.adoptopenjdk.bumblebench.collections"
-		+ ":net.adoptopenjdk.bumblebench.crypto"
-		+ ":net.adoptopenjdk.bumblebench.examples"
-		+ ":net.adoptopenjdk.bumblebench.gpu"
-		+ ":net.adoptopenjdk.bumblebench.lambda"
-		+ ":net.adoptopenjdk.bumblebench.math"
-		+ ":net.adoptopenjdk.bumblebench.indy"
-		+ ":net.adoptopenjdk.bumblebench.daa"
-		+ ":net.adoptopenjdk.bumblebench.json"
-		+ ":net.adoptopenjdk.bumblebench.string"
-		+ ":net.adoptopenjdk.bumblebench.humble"
-		+ ":net.adoptopenjdk.bumblebench.arraycopy"
-		;
+			+ ":net.adoptopenjdk.bumblebench.collections"
+			+ ":net.adoptopenjdk.bumblebench.crypto"
+			+ ":net.adoptopenjdk.bumblebench.examples"
+			+ ":net.adoptopenjdk.bumblebench.gpu"
+			+ ":net.adoptopenjdk.bumblebench.lambda"
+			+ ":net.adoptopenjdk.bumblebench.math"
+			+ ":net.adoptopenjdk.bumblebench.indy"
+			+ ":net.adoptopenjdk.bumblebench.daa"
+			+ ":net.adoptopenjdk.bumblebench.json"
+			+ ":net.adoptopenjdk.bumblebench.string"
+			+ ":net.adoptopenjdk.bumblebench.humble"
+			+ ":net.adoptopenjdk.bumblebench.arraycopy"
+			+ ":net.adoptopenjdk.bumblebench.jitserver"
+			;
 
 	public static Class loadTestClass(String[] packageNames, String name) throws ClassNotFoundException, IOException {
 		ClassNotFoundException typicalException = null;
