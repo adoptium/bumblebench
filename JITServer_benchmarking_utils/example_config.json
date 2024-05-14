@@ -1,0 +1,6 @@
+{
+    "kernels": [
+        {"kernel_name": "TrigBench", "invoc_count": 1}
+    ],
+    "-Xjit:count": 5
+}
