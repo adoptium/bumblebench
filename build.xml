@@ -35,6 +35,7 @@ execute a build.
  	<property name="src-string" value="${basedir}/net/adoptopenjdk/bumblebench/string"/>
 	<property name="src-jni" value="${basedir}/net/adoptopenjdk/bumblebench/jni"/>
 	<property name="src-arraycopy" value="${basedir}/net/adoptopenjdk/bumblebench/arraycopy"/>
+	<property name="src-jitserver" value="${basedir}/net/adoptopenjdk/bumblebench/jitserver"/>
 
 	<target name="compile-all" description="compile" >
 
@@ -155,6 +156,15 @@ execute a build.
              source="1.8"
              target="1.8"
 			 includeantruntime="false">
+		</javac>
+
+		<!-- jitserver -->
+		<javac srcdir="${src-jitserver}"
+			   debug="on"
+			   destdir=""
+			   source="1.8"
+			   target="1.8"
+			   includeantruntime="false">
 		</javac>
 
 		<!-- JNI -->

@@ -18,7 +18,7 @@ import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -46,8 +46,8 @@ public class Launcher extends Util {
 		}
 
 		String testName = args[0].replace('.', '$');
-		if (testName.toLowerCase().contains("jitserver")){
-			parseJitServerOptions(packages, args);
+		if (testName.contains("JITserver")){
+			parseJitServerOptions(args);
 		}
 
 		Class testClass = loadTestClass(packages, testName);
@@ -59,41 +59,18 @@ public class Launcher extends Util {
 		else
 			runBumbleMainOn((BumbleBench)testClass.newInstance());
 	}
-	public static void parseJitServerOptions(String[] packageNames, String[] args) throws IOException, ClassNotFoundException {
-
-		File file = loadFile(packageNames,"jitserver");
-		PrintWriter writer = new PrintWriter(file);
+	public static void parseJitServerOptions(String[] args) throws IOException {
+		String options = "classesToInvoc=";
 
 		if (args.length % 2 == 0){
 			err().println("Incorrect number of arguments");
 			System.exit(1);
 		}
 		for (int i = 1; i<args.length; i+=2){
-			writer.write(args[i] + "," + args[i+1] + "\n");
+			options = options.concat(args[i] + "," + args[i+1] + " ");
 		}
-		writer.close();
+		System.getProperties().load(new ByteArrayInputStream(options.getBytes(StandardCharsets.UTF_8)));
 	}
-	public static File loadFile(String[] packageNames, String name) throws ClassNotFoundException, IOException {
-		ClassNotFoundException typicalException = null;
-		for (String packageName: packageNames) {
-			File testFile = loadFile(packageName, name);
-			if (testFile != null)
-				return testFile;
-		}
-		throw new ClassNotFoundException(name);
-	}
-	public static File loadFile(String packageName, String name){
-		String filePath = packageName.replace('.', '/');
-		String fileName = '/' + qualifiedFileName(filePath, name) + ".properties";
-		URL temp = Launcher.class.getResource(fileName);
-		if (temp != null) {
-			return new File(temp.getPath());
-		}
-		else {
-			return null;
-		}
-	}
-
 
 	static void runBumbleMainOn(BumbleBench instance) throws NoSuchMethodException, IllegalAccessException {
 		Method mainMethod = instance.getClass().getMethod(option("bumbleMain", "bumbleMain"));
