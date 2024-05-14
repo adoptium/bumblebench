@@ -20,8 +20,6 @@ bumblebench_jitserver_path = args['bumblebench_jitserver_path']
 jit_server_args = open('./JITServerArgs.txt', 'w')
 
 config = json.load(open(json_file, 'r'))
-print(config)
-print(type(config))
 flags = ''
 
 for key in config.keys():
