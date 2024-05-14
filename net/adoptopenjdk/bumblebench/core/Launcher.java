@@ -60,7 +60,7 @@ public class Launcher extends Util {
 			runBumbleMainOn((BumbleBench)testClass.newInstance());
 	}
 	public static void parseJitServerOptions(String[] args) throws IOException {
-		String options = "classesToInvoc=";
+		String options = "BumbleBench.classesToInvoc=";
 
 		if (args.length % 2 == 0){
 			err().println("Incorrect number of arguments");

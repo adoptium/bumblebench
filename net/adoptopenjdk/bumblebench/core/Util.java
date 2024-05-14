@@ -14,14 +14,14 @@
 
 package net.adoptopenjdk.bumblebench.core;
 
+import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import java.io.PrintStream;
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.HashMap;
+
+import static net.adoptopenjdk.bumblebench.core.Launcher.defaultPackagePath;
+import static net.adoptopenjdk.bumblebench.core.Launcher.loadTestClass;
 
 public class Util {
 
@@ -128,8 +128,22 @@ public class Util {
 	public static HashMap<Class<? extends MicroBench>, Integer> option(String name, HashMap<Class<? extends MicroBench>, Integer> defaultValue){
 		if (LIST_OPTIONS)
 			out().println("- Option " + name + " default " + defaultValue);
-
-		return new HashMap<>();
+		HashMap<Class<? extends MicroBench>, Integer> classHash = new HashMap<>();
+		String value = optionString(name);
+		String [] hash = value.split(" ");
+		String packagePath = option("packages", defaultPackagePath);
+		String[] packages = packagePath.split("[:;]");
+		for (int i = 0; i < hash.length; i++){
+			String [] pair = hash[i].split(",");
+			try {
+				classHash.put(loadTestClass(packages, pair[0]), Integer.parseInt(pair[1]));
+			}
+			catch (ClassNotFoundException | IOException e){
+				err().println("Classes do not exist");
+				System.exit(1);
+			}
+		}
+		return classHash;
 	}
 
 	public static int option(String name, int defaultValue) {
