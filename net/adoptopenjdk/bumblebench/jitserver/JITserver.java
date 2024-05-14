@@ -29,8 +29,9 @@ public final class JITserver extends MicroBench {
 
                 for(int j = 0; j < invocationCountValue; j++){
                     try {
-                        Method methodReq = classKey.getMethod("doBatch", long.class);
-                        methodReq.invoke(classKey.newInstance());
+                        Method methodReq = classKey.getDeclaredMethod("doBatch", long.class);
+                        methodReq.setAccessible(true);
+                        methodReq.invoke(classKey.newInstance(), invocationCountValue);
                     } catch (NoSuchMethodException e) {
                         System.err.println("Class needs to extend doBatch!");
                         throw new RuntimeException(e);
@@ -40,7 +41,6 @@ public final class JITserver extends MicroBench {
                     }
                 }
             }
-
         }
 
         return numIterations;
