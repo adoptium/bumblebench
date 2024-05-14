@@ -46,8 +46,8 @@ public class Launcher extends Util {
 		}
 
 		String testName = args[0].replace('.', '$');
-		if (testName.contains("JITserver")){
-			parseJitServerOptions(args);
+		if (testName.equals("JITserver")){
+			parseJitServerOptions();
 		}
 
 		Class testClass = loadTestClass(packages, testName);
@@ -59,17 +59,9 @@ public class Launcher extends Util {
 		else
 			runBumbleMainOn((BumbleBench)testClass.newInstance());
 	}
-	public static void parseJitServerOptions(String[] args) throws IOException {
-		String options = "BumbleBench.classesToInvoc=";
-
-		if (args.length % 2 == 0){
-			err().println("Incorrect number of arguments");
-			System.exit(1);
-		}
-		for (int i = 1; i<args.length; i+=2){
-			options = options.concat(args[i] + "," + args[i+1] + " ");
-		}
-		System.getProperties().load(new ByteArrayInputStream(options.getBytes(StandardCharsets.UTF_8)));
+	public static void parseJitServerOptions() throws IOException {
+		File file = new File("./JITServerArgs.txt");
+		System.getProperties().load(new FileInputStream(file));
 	}
 
 	static void runBumbleMainOn(BumbleBench instance) throws NoSuchMethodException, IllegalAccessException {

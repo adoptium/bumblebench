@@ -130,17 +130,17 @@ public class Util {
 			out().println("- Option " + name + " default " + defaultValue);
 		HashMap<Class<? extends MicroBench>, Integer> classHash = new HashMap<>();
 		String value = optionString(name);
-		String [] hash = value.split(" ");
-		String packagePath = option("packages", defaultPackagePath);
-		String[] packages = packagePath.split("[:;]");
-		for (int i = 0; i < hash.length; i++){
-			String [] pair = hash[i].split(",");
-			try {
-				classHash.put(loadTestClass(packages, pair[0]), Integer.parseInt(pair[1]));
-			}
-			catch (ClassNotFoundException | IOException e){
-				err().println("Classes do not exist");
-				System.exit(1);
+		if (value != null) {
+			String[] hash = value.split(" ");
+			String packagePath = option("packages", defaultPackagePath);
+			String[] packages = packagePath.split("[:;]");
+			for (int i = 0; i < hash.length - 1; i += 2) {
+				try {
+					classHash.put(loadTestClass(packages, hash[i]), Integer.parseInt(hash[i + 1]));
+				} catch (ClassNotFoundException | IOException e) {
+					err().println("Classes do not exist");
+					System.exit(1);
+				}
 			}
 		}
 		return classHash;
