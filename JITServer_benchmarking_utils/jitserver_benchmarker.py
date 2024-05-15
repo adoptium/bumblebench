@@ -1,6 +1,21 @@
 import os
 import json
 import argparse
+import hashlib
+from pathlib import Path
+import shutil
+
+def generate_directory(file_path)-> str:
+    BUF_SIZE = 65536
+    sha1 = hashlib.sha1()
+    with open(file_path, 'rb') as f:
+        while True:
+            data = f.read(BUF_SIZE)
+            if not data:
+                break
+            sha1.update(data)
+
+    return sha1.hexdigest()
 
 parser = argparse.ArgumentParser(
     prog='jitserver_benchmarker',
@@ -19,6 +34,9 @@ bumblebench_jitserver_path = args['bumblebench_jitserver_path']
 
 jit_server_args = open('./JITServerArgs.txt', 'w')
 
+log_directory = generate_directory(json_file)
+
+Path(log_directory).mkdir(parents=True, exist_ok=True)
 config = json.load(open(json_file, 'r'))
 xjit_flags = '-Xjit:'
 xaot_flags = '-Xaot'
@@ -32,7 +50,7 @@ for key in config.keys():
             for kernel_conf in config[key]:
                 xjit_flags += "'{" + kernel_conf["method_signature"] + "}(" + kernel_conf["options"] + ")',"
         if strings[1] == "verbose,vlog":
-            xjit_flags += "verbose,vlog" + '=' + str(config[key]) + ","
+            xjit_flags += "verbose,vlog" + '=' + log_directory + "/" + str(config[key]) + ","
     elif key == "kernels":
         jit_server_args.write('BumbleBench.classesToInvoc=')
         for kernel_conf in config['kernels']:
@@ -49,6 +67,8 @@ for key in config.keys():
         other_flags += "-XX:" + sign + "UseJITServer"
 
 jit_server_args.close()
+
+shutil.copy(json_file, log_directory)
 print(
     f'{openj9_path} -jar {xjit_flags} {xaot_flags} {other_flags} {bumblebench_jitserver_path}/BumbleBench.jar JITserver')
 os.system(
