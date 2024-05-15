@@ -5,5 +5,6 @@
     "-Xjit:compiler_method_options": [
         {"method_signature": "java/lang/System.getSysPropBeforePropertiesInitialized(I)Ljava/lang/String;", "options":  "count=0,optLevel=hot"}
     ],
-    "-Xjit:count": 5
+    "-Xjit:count": 5,
+    "-Xjit:verbose,vlog": "vlog_file"
 }

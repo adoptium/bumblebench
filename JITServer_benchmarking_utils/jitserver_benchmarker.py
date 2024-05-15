@@ -30,6 +30,8 @@ for key in config.keys():
         if strings[1] == "compiler_method_options":
             for kernel_conf in config[key]:
                 flags += "'{" + kernel_conf["method_signature"] + "}(" + kernel_conf["options"] + ")',"
+        if strings[1] == "verbose,vlog":
+             flags += "verbose,vlog" + '=' + str(config[key]) + ","
     elif key == "kernels":
         jit_server_args.write('BumbleBench.classesToInvoc=')
         for kernel_conf in config['kernels']:
