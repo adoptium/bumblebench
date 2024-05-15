@@ -42,8 +42,10 @@ parser = argparse.ArgumentParser(
     description="A Script that takes in a json file and checks if it already exists in this directory (and subdirectories)"
 )
 parser.add_argument('-j', '--json_file_path', required=True)
+parser.add_argument('-r', '--replace', action='store_true')
 args = vars(parser.parse_args())
 json_file = args['json_file_path']
+replace = args['replace']
 paths = list(Path('.').glob('**/*.json'))
 
 index_marked = -1
@@ -55,6 +57,8 @@ paths.pop(index_marked)
 
 for file in paths:
     if compare_json(json_file, str(file)):
-        #shutil.copy(file.relative_to("."), json_file)
         print(json_file + " is identical to " + str(file))
+        if replace:
+            print("replaced contents of " + json_file + " with " + str(file))
+            shutil.copy(file.relative_to("."), json_file)
 
