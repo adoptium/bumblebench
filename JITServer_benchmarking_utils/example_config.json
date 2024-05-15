@@ -2,5 +2,8 @@
     "kernels": [
         {"kernel_name": "TrigBench", "invoc_count": 1}
     ],
+    "-Xjit:compiler_method_options": [
+        {"method_signature": "java/lang/System.getSysPropBeforePropertiesInitialized(I)Ljava/lang/String;", "options":  "count=0,optLevel=hot"}
+    ],
     "-Xjit:count": 5
 }

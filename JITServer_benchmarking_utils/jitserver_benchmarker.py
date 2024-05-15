@@ -20,15 +20,20 @@ bumblebench_jitserver_path = args['bumblebench_jitserver_path']
 jit_server_args = open('./JITServerArgs.txt', 'w')
 
 config = json.load(open(json_file, 'r'))
-flags = ''
+flags = '-Xjit:'
 
 for key in config.keys():
-    if key != "kernels":
-        flags += key + '=' + str(config[key])
-    else:
+    if key.startswith("-Xjit"):
+        strings = key.split(":")
+        if strings[1] == "count":
+            flags += "count" + '=' + str(config[key]) + ","
+        if strings[1] == "compiler_method_options":
+            flags += "'{" + config[key]['method_signature'] + "}(" + config[key]['options'] + ")',"
+    elif key == "kernels":
         jit_server_args.write('BumbleBench.classesToInvoc=')
         for kernel_conf in config['kernels']:
             jit_server_args.write(f'{kernel_conf["kernel_name"]} {kernel_conf["invoc_count"]}')
+
 
 jit_server_args.close()
 print(f'{openj9_path} -jar {flags} {bumblebench_jitserver_path}/BumbleBench.jar JITserver')
