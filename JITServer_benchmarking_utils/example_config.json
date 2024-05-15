@@ -6,5 +6,7 @@
         {"method_signature": "java/lang/System.getSysPropBeforePropertiesInitialized(I)Ljava/lang/String;", "options":  "count=0,optLevel=hot"}
     ],
     "-Xjit:count": 5,
-    "-Xjit:verbose,vlog": "vlog_file"
+    "-Xjit:verbose,vlog": "vlog_file",
+    "-Xnoaot": false,
+    "-Xaot:count": 0
 }
