@@ -21,7 +21,15 @@ def recursive_compare(json_config, compare_config) -> bool:
                     return False
             else:
                 return False
-    elif not isinstance(json_config,dict) and not isinstance(compare_config,dict):
+    elif isinstance(json_config,list) and isinstance(compare_config,list):
+        for i in json_config:
+            one_match = False
+            for j in compare_config:
+                if recursive_compare(i,j):
+                    one_match = True
+            if not one_match:
+                return False
+    elif not isinstance(json_config,dict) and not isinstance(compare_config,dict) and not isinstance(json_config,list) and not isinstance(compare_config,list):
         if json_config != compare_config:
             return False
     else:
