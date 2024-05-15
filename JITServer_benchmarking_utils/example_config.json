@@ -8,5 +8,6 @@
     "-Xjit:count": 5,
     "-Xjit:verbose,vlog": "vlog_file",
     "-Xnoaot": false,
-    "-Xaot:count": 0
+    "-Xaot:count": 0,
+    "-XX:UseJITServer": true
 }

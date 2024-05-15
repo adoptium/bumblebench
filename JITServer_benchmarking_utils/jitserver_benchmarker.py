@@ -32,7 +32,7 @@ for key in config.keys():
             for kernel_conf in config[key]:
                 xjit_flags += "'{" + kernel_conf["method_signature"] + "}(" + kernel_conf["options"] + ")',"
         if strings[1] == "verbose,vlog":
-             xjit_flags += "verbose,vlog" + '=' + str(config[key]) + ","
+            xjit_flags += "verbose,vlog" + '=' + str(config[key]) + ","
     elif key == "kernels":
         jit_server_args.write('BumbleBench.classesToInvoc=')
         for kernel_conf in config['kernels']:
@@ -40,11 +40,16 @@ for key in config.keys():
     elif key.startswith("-Xaot"):
         strings = key.split(":")
         if strings[1] == "count":
-             xaot_flags += "count" + '=' + str(config[key]) + ","
-    elif key == "-Xnoaot"        :
-        if config[key] == False:
+            xaot_flags += ":count" + '=' + str(config[key]) + ","
+    elif key == "-Xnoaot":
+        if not config[key]:
             other_flags += key + " "
+    elif key == "-XX:UseJITServer":
+        sign = "+" if config[key] else "-"
+        other_flags += "-XX:" + sign + "UseJITServer"
 
 jit_server_args.close()
-print(f'{openj9_path} -jar {xjit_flags} {xaot_flags} {other_flags} {bumblebench_jitserver_path}/BumbleBench.jar JITserver')
-os.system(f'{openj9_path} -jar {xjit_flags} {xaot_flags} {other_flags} {bumblebench_jitserver_path}/BumbleBench.jar JITserver')
+print(
+    f'{openj9_path} -jar {xjit_flags} {xaot_flags} {other_flags} {bumblebench_jitserver_path}/BumbleBench.jar JITserver')
+os.system(
+    f'{openj9_path} -jar {xjit_flags} {xaot_flags} {other_flags} {bumblebench_jitserver_path}/BumbleBench.jar JITserver')
