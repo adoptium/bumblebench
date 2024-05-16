@@ -18,6 +18,12 @@ def generate_directory(file_path)-> str:
 
     return sha1.hexdigest()
 
+def create_unique_hash(json_dict) -> str:
+    dump = json.dumps(json_dict, sort_keys=True)
+    val = hashlib.md5(dump.encode("utf-8")).hexdigest()
+    print(val)
+    return val
+
 parser = argparse.ArgumentParser(
     prog='jitserver_benchmarker',
     description="A Script that takes in a configuration of kernels and uses BumbleBench for JITServer to benchmark"
