@@ -26,8 +26,10 @@ def hunt_for_copies(json_file, replace) -> None:
 def create_unique_hash(json_dict) -> str:
     # TODO: NOTE THAT THIS PRESERVES ORDERS OF LISTS WHEN HASHING
     dump = json.dumps(json_dict, sort_keys=True)
-    val = hashlib.sha1(dump.encode("utf-8")).hexdigest()
-    return val
+    return create_hash_from_str(dump)
+
+def create_hash_from_str(string) -> str:
+    return hashlib.sha1(string.encode("utf-8")).hexdigest()
 
 
 def create_unique_hash_from_path(json_file, hunt) -> str:

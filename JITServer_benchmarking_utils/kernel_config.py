@@ -1,7 +1,8 @@
 import json
 
 
-def setup_kernel_args(json_file, jit_server_args):
+def setup_kernel_args(json_file):
+    jit_server_args = open('./JITServerArgs.txt', 'w')
     config = json.load(open(json_file, 'r'))
 
     for key in config.keys():
