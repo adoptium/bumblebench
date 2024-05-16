@@ -1,22 +1,11 @@
 import os
 import json
 import argparse
-import hashlib
 from pathlib import Path
 import shutil
 from datetime import datetime
+import config_comparer
 
-def generate_directory(file_path)-> str:
-    BUF_SIZE = 65536
-    sha1 = hashlib.sha1()
-    with open(file_path, 'rb') as f:
-        while True:
-            data = f.read(BUF_SIZE)
-            if not data:
-                break
-            sha1.update(data)
-
-    return sha1.hexdigest()
 
 parser = argparse.ArgumentParser(
     prog='jitserver_benchmarker',
@@ -37,10 +26,9 @@ loud_output = args['loud_output']
 
 jit_server_args = open('./JITServerArgs.txt', 'w')
 
-log_directory = generate_directory(json_file)
-
-Path(log_directory).mkdir(parents=True, exist_ok=True)
 config = json.load(open(json_file, 'r'))
+log_directory = config_comparer.create_unique_hash_from_path(json_file, True)
+Path(log_directory).mkdir(parents=True, exist_ok=True)
 xjit_flags = '-Xjit:'
 xaot_flags = '-Xaot'
 other_flags = ''
@@ -73,7 +61,7 @@ jit_server_args.close()
 
 now = str(datetime.now())
 now = now.replace(" ", ".").replace(":", "").replace("-","")
-shutil.copy(json_file, log_directory)
+shutil.copy(json_file, log_directory + "/config.json")
 if loud_output:
     print(
         f'{openj9_path} -jar {xjit_flags} {xaot_flags} {other_flags} {bumblebench_jitserver_path}/BumbleBench.jar JITserver')
