@@ -4,6 +4,7 @@ import argparse
 import hashlib
 from pathlib import Path
 import shutil
+from datetime import datetime
 
 def generate_directory(file_path)-> str:
     BUF_SIZE = 65536
@@ -25,12 +26,14 @@ parser = argparse.ArgumentParser(
 parser.add_argument('-o', '--openj9_path', required=True)
 parser.add_argument('-c', '--configuration', required=True)
 parser.add_argument('-b', '--bumblebench_jitserver_path', required=True)
+parser.add_argument('-l', '--loud_output', action='store_true')
 
 args = vars(parser.parse_args())
 
 json_file = args['configuration']
 openj9_path = args['openj9_path']
 bumblebench_jitserver_path = args['bumblebench_jitserver_path']
+loud_output = args['loud_output']
 
 jit_server_args = open('./JITServerArgs.txt', 'w')
 
@@ -68,8 +71,16 @@ for key in config.keys():
 
 jit_server_args.close()
 
+now = str(datetime.now())
+now = now.replace(" ", ".").replace(":", "").replace("-","")
 shutil.copy(json_file, log_directory)
-print(
-    f'{openj9_path} -jar {xjit_flags} {xaot_flags} {other_flags} {bumblebench_jitserver_path}/BumbleBench.jar JITserver')
-os.system(
-    f'{openj9_path} -jar {xjit_flags} {xaot_flags} {other_flags} {bumblebench_jitserver_path}/BumbleBench.jar JITserver')
+if loud_output:
+    print(
+        f'{openj9_path} -jar {xjit_flags} {xaot_flags} {other_flags} {bumblebench_jitserver_path}/BumbleBench.jar JITserver')
+    os.system(
+        f'{openj9_path} -jar {xjit_flags} {xaot_flags} {other_flags} {bumblebench_jitserver_path}/BumbleBench.jar JITserver')
+else:
+    print(
+        f'{openj9_path} -jar {xjit_flags} {xaot_flags} {other_flags} {bumblebench_jitserver_path}/BumbleBench.jar JITserver > {log_directory}/output_file.{now}')
+    os.system(
+        f'{openj9_path} -jar {xjit_flags} {xaot_flags} {other_flags} {bumblebench_jitserver_path}/BumbleBench.jar JITserver > {log_directory}/output_file.{now}')
