@@ -1,0 +1,11 @@
+{
+    "method_config": [
+        {"method_signature": "java/lang/System.getSysPropBeforePropertiesInitialized(I)Ljava/lang/String;", "temperature": "hot"}
+    ],
+
+    "-Xjit:count": 5,
+    "-Xjit:verbose,vlog": "vlog_file",
+    "-Xnoaot": false,
+    "-Xaot:count": 0,
+    "-XX:UseJITServer": true
+}
