@@ -1,11 +1,10 @@
 {
-    "method_config": [
-        {"method_signature": "java/lang/System.getSysPropBeforePropertiesInitialized(I)Ljava/lang/String;", "temperature": "hot"}
+    "JIT: method_configs": [
+        {"method_signature": "java/lang/System.getSysPropBeforePropertiesInitialized(I)Ljava/lang/String;", "temperature": "hot", "invocation_count_till_compiled": 0}
     ],
-
-    "-Xjit:count": 5,
-    "-Xjit:verbose,vlog": "vlog_file",
-    "-Xnoaot": false,
-    "-Xaot:count": 0,
-    "-XX:UseJITServer": true
+    "JIT: global_invocation_count_till_compiled": 5,
+    "JIT: log_file": "vlog_file",
+    "AOT: enable_aot": false,
+    "AOT: aot_count": 0,
+    "VM: use_JIT_server": true
 }
