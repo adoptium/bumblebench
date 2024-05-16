@@ -1,5 +1,4 @@
 import os
-import json
 from compiler_config import get_compiler_args
 from kernel_config import setup_kernel_args
 import argparse
@@ -28,14 +27,18 @@ openj9_path = args['openj9_path']
 bumblebench_jitserver_path = args['bumblebench_jitserver_path']
 loud_output = args['loud_output']
 
-jit_server_args = open('./JITServerArgs.txt', 'w')
-log_directory, xjit_flags, xaot_flags, other_flags = get_compiler_args(compiler_json_file)
+compiler_hash = config_comparer.create_unique_hash_from_path(compiler_json_file, True)
+kernel_hash = config_comparer.create_unique_hash_from_path(kernel_json_file, True)
+log_hash = compiler_hash + kernel_hash
+log_directory = config_comparer.create_hash_from_str(log_hash)
+Path(log_directory).mkdir(parents=True, exist_ok=True)
+
+xjit_flags, xaot_flags, other_flags = get_compiler_args(compiler_json_file, log_directory)
 setup_kernel_args(kernel_json_file)
 
 now = str(datetime.now())
-now = now.replace(" ", ".").replace(":", "").replace("-","")
+now = now.replace(" ", ".").replace(":", "").replace("-", "")
 shutil.copy(compiler_json_file, log_directory + "/compiler_config.json")
-
 shutil.copy(kernel_json_file, log_directory + "/kernel_config.json")
 
 if loud_output:
