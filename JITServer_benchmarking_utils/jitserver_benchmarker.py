@@ -1,37 +1,46 @@
 import os
-import json
+import json, hashlib
 import argparse
 
-parser = argparse.ArgumentParser(
-    prog='jitserver_benchmarker',
-    description="A Script that takes in a configuration of kernels and uses BumbleBench for JITServer to benchmark"
-)
 
-parser.add_argument('-o', '--openj9_path', required=True)
-parser.add_argument('-c', '--configuration', required=True)
-parser.add_argument('-b', '--bumblebench_jitserver_path', required=True)
+def create_unique_hash(json_dict) -> str:
+    dump = json.dumps(json_dict, sort_keys=True)
+    val = hashlib.md5(dump.encode("utf-8")).hexdigest()
+    print(val)
+    return val
 
-args = vars(parser.parse_args())
+if __name__ == "__main__":
 
-json_file = args['configuration']
-openj9_path = args['openj9_path']
-bumblebench_jitserver_path = args['bumblebench_jitserver_path']
+    parser = argparse.ArgumentParser(
+        prog='jitserver_benchmarker',
+        description="A Script that takes in a configuration of kernels and uses BumbleBench for JITServer to benchmark"
+    )
 
-jit_server_args = open('./JITServerArgs.txt', 'w')
+    parser.add_argument('-o', '--openj9_path', required=True)
+    parser.add_argument('-c', '--configuration', required=True)
+    parser.add_argument('-b', '--bumblebench_jitserver_path', required=True)
 
-config = json.load(open(json_file, 'r'))
-print(config)
-print(type(config))
-flags = ''
+    args = vars(parser.parse_args())
 
-for key in config.keys():
-    if key != "kernels":
-        flags += key + '=' + str(config[key])
-    else:
-        jit_server_args.write('BumbleBench.classesToInvoc=')
-        for kernel_conf in config['kernels']:
-            jit_server_args.write(f'{kernel_conf["kernel_name"]} {kernel_conf["invoc_count"]}')
+    json_file = args['configuration']
+    openj9_path = args['openj9_path']
+    bumblebench_jitserver_path = args['bumblebench_jitserver_path']
 
-jit_server_args.close()
-print(f'{openj9_path} -jar {flags} {bumblebench_jitserver_path}/BumbleBench.jar JITserver')
-os.system(f'{openj9_path} -jar {flags} {bumblebench_jitserver_path}/BumbleBench.jar JITserver')
+    jit_server_args = open('./JITServerArgs.txt', 'w')
+
+    config = json.load(open(json_file, 'r'))
+    create_unique_hash(config)
+
+    flags = ''
+
+    for key in config.keys():
+        if key != "kernels":
+            flags += key + '=' + str(config[key])
+        else:
+            jit_server_args.write('BumbleBench.classesToInvoc=')
+            for kernel_conf in config['kernels']:
+                jit_server_args.write(f'{kernel_conf["kernel_name"]} {kernel_conf["invoc_count"]}')
+
+    jit_server_args.close()
+    print(f'{openj9_path} -jar {flags} {bumblebench_jitserver_path}/BumbleBench.jar JITserver')
+    os.system(f'{openj9_path} -jar {flags} {bumblebench_jitserver_path}/BumbleBench.jar JITserver')
