@@ -27,7 +27,7 @@ loud_output = args['loud_output']
 jit_server_args = open('./JITServerArgs.txt', 'w')
 
 config = json.load(open(json_file, 'r'))
-log_directory = config_comparer.create_unique_hash(config)
+log_directory = config_comparer.create_unique_hash_from_path(json_file, True)
 Path(log_directory).mkdir(parents=True, exist_ok=True)
 xjit_flags = '-Xjit:'
 xaot_flags = '-Xaot'
