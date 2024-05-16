@@ -30,7 +30,7 @@ loud_output = args['loud_output']
 
 jit_server_args = open('./JITServerArgs.txt', 'w')
 log_directory, xjit_flags, xaot_flags, other_flags = get_compiler_args(compiler_json_file)
-setup_kernel_args(kernel_json_file)
+setup_kernel_args(kernel_json_file, jit_server_args)
 
 now = str(datetime.now())
 now = now.replace(" ", ".").replace(":", "").replace("-","")
