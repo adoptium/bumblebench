@@ -23,14 +23,17 @@ def get_compiler_args(json_file, log_directory):
                     xjit_flags += ")',"
             if strings[1] == "log_file":
                 xjit_flags += "verbose,vlog" + '=' + log_directory + "/" + str(config[key]) + ","
+            if strings[1] == "enable_JIT":
+                if not config[key]:
+                    other_flags += "-Xnojit "
         elif key.startswith("AOT"):
             strings = key.split(":")
             strings[1] = strings[1].strip()
-            if strings[1] == "enable_aot":
+            if strings[1] == "enable_AOT":
                 if not config[key]:
                     xaot_flags = "-Xnoaot"
             if xaot_flags != "-Xnoaot":
-                if strings[1] == "aot_count":
+                if strings[1] == "AOT_count":
                     xaot_flags += "count" + '=' + str(config[key]) + ","
         elif key.startswith("VM"):
             strings = key.split(":")
