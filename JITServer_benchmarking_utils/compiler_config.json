@@ -4,7 +4,8 @@
     ],
     "JIT: global_invocation_count_till_compiled": 5,
     "JIT: log_file": "vlog_file",
-    "AOT: enable_aot": false,
-    "AOT: aot_count": 0,
+    "JIT: enable_JIT": false,
+    "AOT: enable_AOT": false,
+    "AOT: AOT_count": 0,
     "VM: use_JIT_server": true
 }
