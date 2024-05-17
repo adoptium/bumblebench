@@ -135,34 +135,35 @@ public class Util {
 		return true;
 	}
 
-	public static ArrayList<HashMap<Class<? extends MicroBench>, Integer>> option(String name, HashMap<Class<? extends MicroBench>, Integer> defaultValue){
+	public static ArrayList<ArrayList<Object[]>> option(String name, ArrayList<ArrayList<Object[]>> defaultValue){
 
 		if (LIST_OPTIONS)
 			out().println("- Option " + name + " default " + defaultValue);
 
-		ArrayList<HashMap<Class<? extends MicroBench>, Integer>> classHashes = new ArrayList<>();
+		ArrayList<ArrayList<Object[]>> classArrays = new ArrayList<>();
 
 		String value = optionString(name);
 		if (value != null) {
 			String[] hash = value.split(" ");
 			String packagePath = option("packages", defaultPackagePath);
 			String[] packages = packagePath.split("[:;]");
-			HashMap<Class<? extends MicroBench>, Integer> classHash = new HashMap<>();
+			ArrayList<Object[]> classArray = new ArrayList<>();
 
 			for (int i = 0; i < hash.length - 1; i += 2) {
 				if(hash[i].equals("/")){
-					classHashes.add(classHash);
-					classHash = new HashMap<>();
+					classArrays.add(classArray);
+					classArray = new ArrayList<>();
 				}
 				try {
-					classHash.put(loadTestClass(packages, hash[i]), Integer.parseInt(hash[i + 1]));
+					Object[] items = {loadTestClass(packages, hash[i]), Integer.parseInt(hash[i + 1])};
+					classArray.add(items);
 				} catch (ClassNotFoundException | IOException e) {
 					err().println("Classes do not exist");
 					System.exit(1);
 				}
 			}
 		}
-		return classHashes;
+		return classArrays;
 	}
 
 	public static int option(String name, int defaultValue) {

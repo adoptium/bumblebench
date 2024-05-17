@@ -6,11 +6,11 @@ def setup_kernel_args(json_file):
     config = json.load(open(json_file, 'r'))
 
     for key in config.keys():
-        if key == "kernels":
-            jit_server_args.write('BumbleBench.classesToInvoc=')
-            for kernel_config in config["kernels"]:
-                jit_server_args.write(f'{kernel_config["kernel_name"]} {kernel_config["invoc_count"]} ')
-
+        if key == "threads":
+            for thread in config[key]:
+                for kernel_config in thread["kernels"]:
+                    jit_server_args.write(f'{kernel_config["kernel_name"]} {kernel_config["invoc_count"]} ')
+                jit_server_args.write(f'/ ')
             jit_server_args.write('\n')
         elif key == "multi-threaded":
             jit_server_args.write('BumbleBench.isMultiThreaded=')
