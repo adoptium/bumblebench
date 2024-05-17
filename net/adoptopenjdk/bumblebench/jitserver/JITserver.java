@@ -11,12 +11,10 @@ import java.util.Map;
 public final class JITserver extends MicroBench {
 
     // Classes and corresponding invocation counts
-    static final HashMap<Class<? extends MicroBench>, Integer> classesToInvocation;
-    static final boolean isMultiThreaded;
+    static final ArrayList<ArrayList<Object[]>> classesToInvocation;
 
     static {
-        classesToInvocation = option("classesToInvoc", new HashMap<>());
-        isMultiThreaded = option("multi-threaded", true);
+        classesToInvocation = option("classesToInvoc", new ArrayList<>());
     }
 
     @Override
@@ -24,15 +22,23 @@ public final class JITserver extends MicroBench {
 
         ArrayList<Thread> threads = new ArrayList<>();
 
+        // JITServer doBatch iterations
         for (long i = 0; i < numIterations; i++) {
 
-            // Use Reflection to call doBatch for required number of invocations.
-            for(Map.Entry<Class<? extends MicroBench>, Integer> classIntegerEntry : classesToInvocation.entrySet()){
+            // Create each thread
+            for(ArrayList<Object[]> eachThread : classesToInvocation){
 
-                Class<? extends MicroBench> classKey = classIntegerEntry.getKey();
-                Integer invocationCountValue = classIntegerEntry.getValue();
+                Method[] methodReqArr = new Method[classesToInvocation.size()];
+                Class<? extends MicroBench>[] classKeyArr = new Class[classesToInvocation.size()];
+                int[] invocCountArr = new int[classesToInvocation.size()];
 
-                for(int j = 0; j < invocationCountValue; j++){
+               // Find Class, invocation count, and method for each kernel within thread
+                int sequentialCalls = 0;
+                for(Object[] classIntegerEntry : eachThread){
+
+                    // Use Reflection to call doBatch for required number of invocations.
+                    Class<? extends MicroBench> classKey = (Class<? extends MicroBench>) classIntegerEntry[0];
+                    Integer invocationCountValue = (Integer) classIntegerEntry[1];
                     Method methodReq;
                     try {
                         methodReq = classKey.getDeclaredMethod("doBatch", long.class);
@@ -41,35 +47,33 @@ public final class JITserver extends MicroBench {
                         throw new RuntimeException(e);
                     }
                     methodReq.setAccessible(true);
+                    methodReqArr[sequentialCalls] = methodReq;
+                    classKeyArr[sequentialCalls] = classKey;
+                    invocCountArr[sequentialCalls] = invocationCountValue;
 
-                    if(isMultiThreaded){
-                        // Thread responsible for spawning a doBatch
-                        Thread t = getThread(methodReq, classKey);
-                        threads.add(t);
-                    }
-                    else {
-                        try {
-                            methodReq.invoke(classKey.newInstance(), 1);
-                        } catch (InvocationTargetException | IllegalAccessException | InstantiationException e) {
-                            System.err.println("Could not dynamically initiate doBatch");
-                            throw new RuntimeException(e);
-                        }
-                    }
+                    sequentialCalls++;
                 }
-            }
-        }
 
-        for(Thread thread : threads){
-            thread.join();
+                // Thread responsible for spawning a doBatch
+                Thread t = getThread(methodReqArr, classKeyArr, invocCountArr);
+                threads.add(t);
+            }
+
+            for(Thread thread : threads){
+                thread.join();
+            }
         }
 
         return numIterations;
     }
 
-    private static Thread getThread(Method methodReq, Class<? extends MicroBench> classKey) {
+    private static Thread getThread(Method[] methodReqArr, Class<? extends MicroBench>[] classKeyArr, int[] invocationCountArr) {
         Thread t = new Thread(() -> {
             try {
-                methodReq.invoke(classKey.newInstance(), 1);
+                // Sequentially call the doBatch for each kernel with their corresponding invocation count.
+                for(int i = 0; i < methodReqArr.length; i++) {
+                    methodReqArr[i].invoke(classKeyArr[i].newInstance(), invocationCountArr[i]);
+                }
             } catch (InvocationTargetException | IllegalAccessException | InstantiationException e) {
                 System.err.println("Could not dynamically initiate doBatch");
                 throw new RuntimeException(e);
