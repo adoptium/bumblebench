@@ -18,6 +18,7 @@ import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import static net.adoptopenjdk.bumblebench.core.Launcher.defaultPackagePath;
@@ -125,16 +126,34 @@ public class Util {
 			return value.intern();
 	}
 
-	public static HashMap<Class<? extends MicroBench>, Integer> option(String name, HashMap<Class<? extends MicroBench>, Integer> defaultValue){
+	private static boolean isNumeric(String str)
+	{
+		for (char c : str.toCharArray())
+		{
+			if (!Character.isDigit(c)) return false;
+		}
+		return true;
+	}
+
+	public static ArrayList<HashMap<Class<? extends MicroBench>, Integer>> option(String name, HashMap<Class<? extends MicroBench>, Integer> defaultValue){
+
 		if (LIST_OPTIONS)
 			out().println("- Option " + name + " default " + defaultValue);
-		HashMap<Class<? extends MicroBench>, Integer> classHash = new HashMap<>();
+
+		ArrayList<HashMap<Class<? extends MicroBench>, Integer>> classHashes = new ArrayList<>();
+
 		String value = optionString(name);
 		if (value != null) {
 			String[] hash = value.split(" ");
 			String packagePath = option("packages", defaultPackagePath);
 			String[] packages = packagePath.split("[:;]");
+			HashMap<Class<? extends MicroBench>, Integer> classHash = new HashMap<>();
+
 			for (int i = 0; i < hash.length - 1; i += 2) {
+				if(hash[i].equals("/")){
+					classHashes.add(classHash);
+					classHash = new HashMap<>();
+				}
 				try {
 					classHash.put(loadTestClass(packages, hash[i]), Integer.parseInt(hash[i + 1]));
 				} catch (ClassNotFoundException | IOException e) {
@@ -143,7 +162,7 @@ public class Util {
 				}
 			}
 		}
-		return classHash;
+		return classHashes;
 	}
 
 	public static int option(String name, int defaultValue) {

@@ -1,7 +1,16 @@
 {
-    "kernels": [
-        {"kernel_name": "TardyBench", "invoc_count": 2},
-        {"kernel_name": "TrigBench", "invoc_count": 1}
-    ],
-    "multi-threaded": true
+    "threads": [
+        {
+            "kernels": [
+                {"kernel_name": "TardyBench", "invoc_count": 2},
+                {"kernel_name": "TrigBench", "invoc_count": 1}
+            ]
+        },
+        {
+            "kernels": [
+                {"kernel_name": "TardyBench", "invoc_count": 2},
+                {"kernel_name": "TrigBench", "invoc_count": 1}
+            ]
+        }
+    ]
 }
