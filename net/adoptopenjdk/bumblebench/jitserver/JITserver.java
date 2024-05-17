@@ -28,9 +28,9 @@ public final class JITserver extends MicroBench {
             // Create each thread
             for(ArrayList<Object[]> eachThread : classesToInvocation){
 
-                Method[] methodReqArr = new Method[classesToInvocation.size()];
-                Class<? extends MicroBench>[] classKeyArr = new Class[classesToInvocation.size()];
-                int[] invocCountArr = new int[classesToInvocation.size()];
+                Method[] methodReqArr = new Method[eachThread.size()];
+                Class<? extends MicroBench>[] classKeyArr = new Class[eachThread.size()];
+                int[] invocCountArr = new int[eachThread.size()];
 
                // Find Class, invocation count, and method for each kernel within thread
                 int sequentialCalls = 0;

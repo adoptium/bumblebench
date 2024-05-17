@@ -153,6 +153,7 @@ public class Util {
 				if(hash[i].equals("/")){
 					classArrays.add(classArray);
 					classArray = new ArrayList<>();
+					i++;
 				}
 				try {
 					Object[] items = {loadTestClass(packages, hash[i]), Integer.parseInt(hash[i + 1])};
@@ -162,6 +163,7 @@ public class Util {
 					System.exit(1);
 				}
 			}
+			classArrays.add(classArray);
 		}
 		return classArrays;
 	}
