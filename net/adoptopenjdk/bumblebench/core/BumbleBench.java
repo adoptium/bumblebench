@@ -266,10 +266,16 @@ public abstract class BumbleBench extends Util implements Runnable {
 		if (verify()) {
 			String score_prefix = "  " + _name + " score: ";
 			String uncertainty_prefix = "  uncertainty: ";
+
+			String whitespace = "";
+			for (int i = 0; i < Math.abs(uncertainty_prefix.length() - score_prefix.length()); i++) {
+				whitespace = whitespace + " ";
+			}
+
 			if (score_prefix.length() < uncertainty_prefix.length()) {
-				score_prefix = " ".repeat(uncertainty_prefix.length() - score_prefix.length()) + score_prefix;
+				score_prefix = whitespace + score_prefix;
 			} else if (score_prefix.length() > uncertainty_prefix.length()) {
-				uncertainty_prefix = " ".repeat(score_prefix.length() - uncertainty_prefix.length()) + uncertainty_prefix;
+				uncertainty_prefix = whitespace + uncertainty_prefix;
 			}
 			out().println("\n" + score_prefix + String.format("%f",_maxPeak) + " (" + score(_maxPeak) + " " + logPoints(_maxPeak) + "%)");
 			out().println(uncertainty_prefix + percentage(_uncertainty) + "%");
