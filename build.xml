@@ -25,6 +25,7 @@ execute a build.
 	<property name="src-core" value="${basedir}/net/adoptopenjdk/bumblebench/core"/>
 	<property name="src-collections" value="${basedir}/net/adoptopenjdk/bumblebench/collections"/>
 	<property name="src-crypto" value="${basedir}/net/adoptopenjdk/bumblebench/crypto"/>
+    <property name="src-class" value="${basedir}/net/adoptopenjdk/bumblebench/casting/isAssignableFrom"/>
 	<property name="src-examples" value="${basedir}/net/adoptopenjdk/bumblebench/examples"/>
 	<property name="src-gpu" value="${basedir}/net/adoptopenjdk/bumblebench/gpu"/>
 	<property name="src-humble" value="${basedir}/net/adoptopenjdk/bumblebench/humble"/>
@@ -55,6 +56,15 @@ execute a build.
              includeantruntime="false"
              includes="**/ParallelBench.java">
 		</javac>
+    <javac srcdir="${src-class}" 
+             destdir=""
+             debug="on"
+             source="1.8"
+             target="1.8"
+             includeantruntime="false"
+             includes="**/*AssignableFromBench.java">
+		</javac>
+
 
 		<!-- collections -->
 		<javac srcdir="${src-collections}" 
