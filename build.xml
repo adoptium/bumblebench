@@ -10,8 +10,8 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-This is a build.xml which executes the main openjdk.build build.xml
-to allow tools which invoke a root level build.xml file to
+This is a build.xml which executes the main openjdk.build build.xml 
+to allow tools which invoke a root level build.xml file to 
 execute a build.
 -->
 
@@ -35,13 +35,11 @@ execute a build.
  	<property name="src-string" value="${basedir}/net/adoptopenjdk/bumblebench/string"/>
 	<property name="src-jni" value="${basedir}/net/adoptopenjdk/bumblebench/jni"/>
 	<property name="src-arraycopy" value="${basedir}/net/adoptopenjdk/bumblebench/arraycopy"/>
-    <property name="src-unsafe" value="${basedir}/net/adoptopenjdk/bumblebench/unsafe"/>
-    <property environment="env"/>
 
 	<target name="compile-all" description="compile" >
 
 		<!-- core -->
-		<javac srcdir="${src-core}"
+		<javac srcdir="${src-core}" 
              destdir=""
              debug="on"
              source="1.8"
@@ -49,7 +47,7 @@ execute a build.
              includeantruntime="false"
              excludes="">
 		</javac>
-		<javac srcdir="${src-core}"
+		<javac srcdir="${src-core}" 
              destdir=""
              debug="on"
              source="1.8"
@@ -59,100 +57,100 @@ execute a build.
 		</javac>
 
 		<!-- collections -->
-		<javac srcdir="${src-collections}"
-            debug="on"
+		<javac srcdir="${src-collections}" 
+            debug="on" 
             destdir=""
             source="1.8"
-            target="1.8"
+            target="1.8" 
             includeantruntime="false"
             classpath="${src-core}"
         	excludes="**/*ambda*.java">
 		</javac>
 
-		<javac srcdir="${src-collections}"
-            debug="on"
+		<javac srcdir="${src-collections}" 
+            debug="on" 
             destdir=""
             source="1.8"
-            target="1.8"
+            target="1.8" 
             includeantruntime="false"
             classpath="${src-core}"
             includes="**/*ambda*.java">
 		</javac>
 
 		<!-- crypto -->
-		<javac srcdir="${src-crypto}"
-            debug="on"
+		<javac srcdir="${src-crypto}" 
+            debug="on" 
             destdir=""
             source="1.8"
-            target="1.8"
+            target="1.8" 
             includeantruntime="false"
             classpath="${src-core}">
 		</javac>
 
 		<!-- examples -->
-		<javac srcdir="${src-examples}"
-            debug="on"
+		<javac srcdir="${src-examples}" 
+            debug="on" 
             destdir=""
             source="1.8"
-            target="1.8"
+            target="1.8" 
             includeantruntime="false"
             classpath="${src-examples}"
             includes="**/SocketEchoBench.java">
 		</javac>
-		<javac srcdir="${src-examples}"
-             debug="on"
+		<javac srcdir="${src-examples}" 
+             debug="on" 
              destdir=""
              source="1.8"
-             target="1.8"
+             target="1.8" 
              includeantruntime="false"
              classpath="${src-examples}"
              includes="**/*ambda*.java">
 		</javac>
-		<javac srcdir="${src-examples}"
-            debug="on"
+		<javac srcdir="${src-examples}" 
+            debug="on" 
             destdir=""
             source="1.8"
-            target="1.8"
+            target="1.8" 
             includeantruntime="false"
             classpath="${src-examples}"
         	excludes="**/*ambda*.java, **/SocketEchoBench.java">
 		</javac>
 
 		<!-- string -->
-        <javac srcdir="${src-string}"
-            debug="on"
+        <javac srcdir="${src-string}" 
+            debug="on" 
             destdir=""
             encoding="UTF-8"
             source="1.8"
-            target="1.8"
+            target="1.8" 
             includeantruntime="false"
             classpath="${src-string}">
         </javac>
-
+		
 		<!-- gpu -->
-		<javac srcdir="${src-gpu}"
-            debug="on"
+		<javac srcdir="${src-gpu}" 
+            debug="on" 
             destdir=""
             source="1.8"
-            target="1.8"
+            target="1.8" 
             includeantruntime="false"
             classpath="${src-gpu}">
 		</javac>
 
 		<!-- indy -->
 		<!--
-        <javac srcdir="${src-indy}"
-             debug="on"
+        <javac srcdir="${src-indy}" 
+             debug="on" 
              destdir=""
              source="1.8"
-             target="1.8"
+             target="1.8" 
              classpath="${src-indy},${basedir}/asm-all-4.0.jar">
          </javac>
     	-->
 
 		<!-- lambda -->
-		<javac srcdir="${src-lambda}"
-             debug="on"
+		<javac srcdir="${src-lambda}" 
+             debug="on" 
              destdir=""
              source="1.8"
              target="1.8"
@@ -160,8 +158,8 @@ execute a build.
 		</javac>
 
 		<!-- JNI -->
-		<javac srcdir="${src-jni}"
-             debug="on"
+		<javac srcdir="${src-jni}" 
+             debug="on" 
              destdir=""
              source="1.8"
              target="1.8"
@@ -169,43 +167,32 @@ execute a build.
 		</javac>
 
 		<!-- math -->
-		<javac srcdir="${src-math}"
-             debug="on"
+		<javac srcdir="${src-math}" 
+             debug="on" 
              destdir=""
              source="1.8"
-             target="1.8"
+             target="1.8" 
 			 includeantruntime="false"
              classpath="${src-math}">
 		</javac>
 
 		<!-- humble -->
-		<javac srcdir="${src-humble}"
+		<javac srcdir="${src-humble}" 
         debug="on"
         destdir=""
         source="1.8"
-        target="1.8"
+        target="1.8" 
         includeantruntime="false">
 		</javac>
 
 		<!-- arraycopy -->
-		<javac srcdir="${src-arraycopy}"
+		<javac srcdir="${src-arraycopy}" 
         debug="on"
         destdir=""
         source="1.8"
-        target="1.8"
+        target="1.8" 
         includeantruntime="false">
 		</javac>
-
-        <!-- unsafe -->
-        <javac srcdir="${src-unsafe}"
-            debug="on"
-            destdir=""
-            source="21"
-            target="21"
-            includeantruntime="false"
-            excludes="generator/**">
-            <compilerarg line="--add-exports java.base/jdk.internal.misc=ALL-UNNAMED"/>
-        </javac>
 	</target>
 
 	<!-- Create BumbleBench.jar and clean up -->
@@ -214,7 +201,7 @@ execute a build.
 			<arg value="-c" />
 			<arg value="rm -f BumbleBench.jar" />
 		</exec>
-
+		
 		<jar jarfile="${dist}/BumbleBench.jar" filesonly="true">
 			<fileset dir="${basedir}"
              	excludes="**/asm-all-4.0.jar,**/Makefile,**/*.mk, **/build.xml. **/.project">
