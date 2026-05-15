@@ -16,7 +16,6 @@ execute a build.
 -->
 
 <project name="net.adoptopenjdk.bumblebench" default="dist" basedir=".">
-	<!--taskdef resource='net/sf/antcontrib/antlib.xml'/-->
 	<description>
        Compile net.adoptopenjdk.bumblebench
     </description>
