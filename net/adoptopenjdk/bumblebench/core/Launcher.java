@@ -78,6 +78,7 @@ public class Launcher extends Util {
 		+ ":net.adoptopenjdk.bumblebench.string"
 		+ ":net.adoptopenjdk.bumblebench.humble"
 		+ ":net.adoptopenjdk.bumblebench.arraycopy"
+		+ ":net.adoptopenjdk.bumblebench.casting.isAssignableFrom"
 		;
 
 	public static Class loadTestClass(String[] packageNames, String name) throws ClassNotFoundException, IOException {
